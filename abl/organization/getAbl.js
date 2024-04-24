@@ -5,7 +5,7 @@ const organizationDao = require("../../dao/organization-dao.js");
 const schema = {
   type: "object",
   properties: {
-    GUID: { type: "string", minLength: 128,maxLenght:128 },
+    GUID: { type: "string"},
   },
   required: ["GUID"],
   additionalProperties: false,
@@ -28,8 +28,8 @@ async function GetAbl(req, res) {
       return;
     }
 
-    organizationDao.get(reqParams.id);
-    res.json({});
+    let organization = organizationDao.get(reqParams.GUID);
+    res.json(organization);
   } catch (e) {
     res.status(500).json({ note: e.note });
   }

@@ -2,6 +2,7 @@ const Ajv = require("ajv");
 const ajv = new Ajv();
 
 const recordDao = require("../../dao/record-dao.js");
+const organizationDao = require("../../dao/organization-dao.js");
 
 const schema = {
   type: "object",
@@ -12,7 +13,7 @@ const schema = {
   additionalProperties: false,
 };
 
-async function GetAbl(req, res) {
+async function ListByOrganizationAbl(req, res) {
   try {
     // get request query or body
     const reqParams = req.query?.GUID ? req.query : req.body;
@@ -27,21 +28,25 @@ async function GetAbl(req, res) {
       });
       return;
     }
-
-    // read user by given id
-    const record = recordDao.get(reqParams.GUID);
-    if (!record) {
-      res.status(404).json({
-        code: "userNotFound",
-        message: `User ${reqParams.id} not found`,
+    let organizationList = organizationDao.list();
+    const organizationExists = organizationList.some((u) => u.GUID === reqParams.GUID);
+    if (!organizationExists) {
+      res.status(400).json({
+        code: "organizationDoesNotExists",
+        message: `This organization does not exist`,
       });
+      userDao.remove(user);
       return;
     }
 
-    res.json(record);
+    // read user by given id
+    const recordList = recordDao.listByOrganization(reqParams.GUID);
+    
+
+    res.json(recordList);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
 }
 
-module.exports = GetAbl;
+module.exports = ListByOrganizationAbl;

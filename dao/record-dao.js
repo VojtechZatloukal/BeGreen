@@ -43,9 +43,9 @@ function update(record) {
 }
 
 
-function remove(eventGUID) {
+function remove(recordGUID) {
   try {
-    const filePath = path.join(eventFolderPath, `${eventGUID}.json`);
+    const filePath = path.join(recordFolderPath, `${recordGUID}.json`);
     fs.unlinkSync(filePath);
     return {};
   } catch (error) {
@@ -55,7 +55,8 @@ function remove(eventGUID) {
 }
 
 
-function list() {
+
+function listByOrganization(organizationGUID) {
   try {
     const files = fs.readdirSync(recordFolderPath);
     const recordList = files.map((file) => {
@@ -63,9 +64,14 @@ function list() {
         path.join(recordFolderPath, file),
         "utf8"
       );
-      return JSON.parse(fileData);
+
+      let record = JSON.parse(fileData)
+      if(record.OrganizationGUID == organizationGUID)
+      {
+        return record;
+      }
     });
-    recordList.sort((a, b) => new Date(a.date) - new Date(b.date));
+    recordList.sort((a, b) => new Date(a.Date) - new Date(b.Date));
     return recordList;
   } catch (error) {
     throw { code: "failedToListRecords", message: error.message };
@@ -77,5 +83,5 @@ module.exports = {
   create,
   update,
   remove,
-  list,
+  listByOrganization,
 };

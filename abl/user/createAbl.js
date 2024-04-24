@@ -11,21 +11,19 @@ const roleDao = require("../../dao/role-dao.js");
 const schema = {
   type: "object",
   properties: {
-    Name: { type: "string"},
+    Name: { type: "string" },
     Surname: { type: "string" },
     Email: { type: "string", format: "email" },
-    isAdmin: { type: "boolean"},
-    Password: { type: "string", minLength:3 },
-    Organization:{type:"string", minLength:128,maxLength:128}
+    Organization: { type: "string" }
   },
-  required: ["Name", "Surname","Email","isAdmin","Organization"],
+  required: ["Name", "Surname", "Email", "Organization"],
   additionalProperties: false,
 };
 
 async function CreateAbl(req, res) {
   try {
     let user = req.body;
-  
+
     // validate input
     const valid = ajv.validate(schema, user);
     if (!valid) {
@@ -46,13 +44,10 @@ async function CreateAbl(req, res) {
       return;
     }
 
-    user.Role = roleDao.getId("OrganizationAdmin");
-    if(!user.isAdmin){
-      user.Password = "default";
-      user.PasswordChanged = false;
-      user.Role = roleDao.getId("OrganizationUser")
-    }
 
+    user.Password = "default";
+    user.PasswordChanged = false;
+    user.Role = roleDao.getId("OrganizationUser")
 
     user = userDao.create(user);
     res.json(user);

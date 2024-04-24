@@ -38,11 +38,7 @@ function update(user) {
   try {
     const currentUser = get(user.GUID);
     if (!currentUser) return null;
-
     const newUser = { ...currentUser, ...user };
-if(newUser.Password != "default" && newUser.Password != currentUser){
-    newUser.PasswordChanged = true;
-}
     const filePath = path.join(userFolderPath, `${user.GUID}.json`);
     const fileData = JSON.stringify(newUser);
     fs.writeFileSync(filePath, fileData, "utf8");
@@ -55,11 +51,8 @@ if(newUser.Password != "default" && newUser.Password != currentUser){
 // Method to remove an user from a file
 function remove(userGUID) {
   try {
-   
       const filePath = path.join(userFolderPath, `${userGUID}.json`);
       fs.unlinkSync(filePath);
-    
-    
   } catch (error) {
     if (error.code === "ENOENT") {
       return {};
@@ -97,6 +90,7 @@ function listByOrganization(organizationGUID){
         throw { code: "failedToListUsers", message: error.message };
       }
 }
+
 
 module.exports = {
   get,

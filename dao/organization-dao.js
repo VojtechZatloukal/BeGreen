@@ -21,7 +21,7 @@ function create(organization) {
   try {
     organization.GUID = crypto.randomUUID().toString();
     const filePath = path.join(organizationFolderPath, `${organization.GUID}.json`);
-    const fileData = JSON.stringify(user);
+    const fileData = JSON.stringify(organization);
     fs.writeFileSync(filePath, fileData, "utf8");
     return organization;
   } catch (error) {

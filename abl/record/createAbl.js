@@ -2,17 +2,19 @@ const Ajv = require("ajv");
 const ajv = new Ajv();
 
 const recordDao = require("../../dao/record-dao.js")
+const organizationDao = require("../../dao/organization-dao.js");
+const userDao = require("../../dao/user-dao.js");
 
 
 const schema = {
   type: "object",
   properties: {
-    Organization: { type: "string", minLength: 128, maxLength: 128 },
-    CreatorGUID: { type: "string", minLength: 128, maxLength: 128 },
-    Action: { type: "string", minLength:1 },
-    Value: {type:"number"},
+    OrganizationGUID: { type: "string" },
+    CreatorGUID: { type: "string"},
+    Action: { type: "string" },
+    Value: { type: "number" },
   },
-  required: ["Organization", "CreatorGUID","Action", "Value"],
+  required: ["OrganizationGUID", "CreatorGUID", "Action", "Value"],
   additionalProperties: false,
 };
 
@@ -20,7 +22,7 @@ async function CreateAbl(req, res) {
   try {
     let dtoIn = req.body;
 
-   
+
     const valid = ajv.validate(schema, dtoIn);
     if (!valid) {
       res.status(400).json({
@@ -31,27 +33,41 @@ async function CreateAbl(req, res) {
       return;
     }
 
-    // check if user exists
-    const user = userDao.get(dtoIn.userId);
-    if (!user) {
-      res.status(404).json({
-        code: "userNotFound",
-        message: `User ${dtoIn.userId} not found`,
+
+    
+    let organizationList = organizationDao.list();
+    const organizationExists = organizationList.some((u) => u.GUID === dtoIn.GUID);
+    if (!organizationExists) {
+      res.status(400).json({
+        code: "organizationDoesNotExists",
+        message: `This organization does not exist`,
+      });
+      userDao.remove(user);
+      return;
+    }
+    const userList = userDao.list();
+    const emailExists = userList.some((u) => u.GUID === dtoIn.CreatorGUID);
+    if (!emailExists) {
+      res.status(400).json({
+        code: "userDoesNotExist",
+        message: `This user does not exist`,
       });
       return;
     }
 
-    // check if event exists
-    const record = recordDao.get(dtoIn.eventId);
-    if (!record) {
-      res.status(404).json({
-        code: "eventNotFound",
-        message: `Event ${dtoIn.eventId} not found`,
+    if(dtoIn.Value < 0){
+      res.status(400).json({
+        code: "dtoInIsNotValid",
+        message: "Value cannot be negative number",
+        validationError: ajv.errors,
       });
       return;
     }
+    dtoIn.Date = Date();
+    let record = recordDao.create(dtoIn);
 
-    res.json(attendance);
+
+    res.json(record);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
