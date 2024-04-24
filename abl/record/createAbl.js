@@ -9,8 +9,8 @@ const userDao = require("../../dao/user-dao.js");
 const schema = {
   type: "object",
   properties: {
-    OrganizationGUID: { type: "string" },
-    CreatorGUID: { type: "string"},
+    OrganizationGUID: { type: "string",minLength:36,maxLength:36  },
+    CreatorGUID: { type: "string",minLength:36,maxLength:36 },
     Action: { type: "string" },
     Value: { type: "number" },
   },

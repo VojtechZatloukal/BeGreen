@@ -6,7 +6,7 @@ const userDao = require("../../dao/user-dao.js");
 const schema = {
   type: "object",
   properties: {
-    GUID: { type: "string" },
+    GUID: { type: "string",minLength:36,maxLength:36  },
   },
   required: ["GUID"],
   additionalProperties: false,
