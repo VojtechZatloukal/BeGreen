@@ -1,0 +1,64 @@
+.navButton{
+    background-color: lightgreen;
+    border: none;
+    padding: 15px;
+    margin: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 5px;
+}
+.Navbar{
+    height: 5vh;
+    padding: 5px;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    justify-content: space-between;
+    background-color: lightgray;
+    margin-bottom: 5%;
+}
+.Name{
+    height: 100%;
+    text-align: center;
+    margin: 0;
+    color: rgb(82, 255, 47);
+}
+body{
+    margin: 0;
+}
+.ModalWrap{
+    width: 100vw;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    position: absolute;
+    backdrop-filter: blur(10px);
+}
+.ModalBodyForm{
+    
+    display: flex !important;
+    background: black;
+    width: 50%;
+    margin-top: 20%;
+    margin-left: 20%;
+    flex-direction: column;
+}
+.ModalBodyForm label{
+    color: white;
+}
+.MyOrganizationBody{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.Right{
+    padding: 5%;
+    padding-left: 10%;
+    padding-right: 10%;
+    background-color: lightgray;
+}
+.TextInput{
+    font-size: x-large;
+    height: 40px;
+}

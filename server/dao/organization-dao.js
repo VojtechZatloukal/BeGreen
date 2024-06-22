@@ -4,6 +4,8 @@ const crypto = require("crypto");
 
 
 const organizationFolderPath = path.join(__dirname, "storage", "organizationList");
+const userFolderPath = path.join(__dirname, "storage", "userList");
+const recordFolderPath = path.join(__dirname, "storage", "recordList");
 
 // Method to read an user from a file
 function get(organizationGUID) {
@@ -14,6 +16,31 @@ function get(organizationGUID) {
   } catch (error) {
     if (error.code === "ENOENT") return null;
     throw { code: "failedToReadOrganization", message: error.message };
+  }
+}
+
+function lastActivity(){
+  try {
+    const files = fs.readdirSync(recordFolderPath);
+    const activityList = files.map((file) => {
+      const fileData = fs.readFileSync(path.join(recordFolderPath, file), "utf8");
+      return JSON.parse(fileData);
+    });
+    var newestActivity = null;
+    for (var element of activityList) {
+    if(newestActivity == null){
+      newestActivity = element
+    }
+    else{
+      if(newestActivity.Date.getTime() >= element.Date.getTime()){
+        newestActivity = element;
+      }
+    }
+
+  }
+    return newestActivity;
+  } catch (error) {
+    throw { code: "failedToListUsers", message: error.message };
   }
 }
 

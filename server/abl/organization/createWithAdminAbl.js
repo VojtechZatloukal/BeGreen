@@ -11,7 +11,7 @@ const schema = {
   properties: {
     Name: { type: "string" },
     VATIN: { type: "string" },
-    EmployeeCount: { type: "integer" },
+    EmployeeCount: { type: "string" },
     AdminEmail: { type: "string", format: "email" },
     AdminName: { type: "string" },
     AdminSurname: { type: "string" },
@@ -44,7 +44,7 @@ async function CreateWithAdminAbl(req, res) {
         code: "organizationAlreadyExists",
         message: `Organization with VATIN ${dtoIn.VATIN} already exists`,
       });
-      userDao.remove(user);
+      
       return;
     }
 

@@ -8,7 +8,7 @@ const userDao = require("../../dao/user-dao.js");
 const schema = {
     type: "object",
     properties: {
-      GUID: { type: "string",minLength:36,maxLength:36 },
+      GUID: { type: "string" },
     },
     required: ["GUID"],
     additionalProperties: false,
@@ -17,7 +17,7 @@ const schema = {
 async function ListByOrganizationAbl(req, res) {
   try {
  // get request query or body
- const reqParams = req.query?.id ? req.query : req.body;
+ const reqParams = req.query ;
 
  // validate input
  const valid = ajv.validate(schema, reqParams);
@@ -31,8 +31,9 @@ async function ListByOrganizationAbl(req, res) {
  }
 
 
-
+ console.log(reqParams.GUID);
     const userList = userDao.listByOrganization(reqParams.GUID);
+    console.log(userList);
     res.json(userList);
   } catch (e) {
     res.status(500).json({ message: e.message });

@@ -12,7 +12,7 @@ const schema = {
 };
 
 
-async function GetAbl(req, res) {
+async function lastActivityAbl(req, res) {
   try {
     // get request query or body
     const reqParams = req.query;
@@ -28,11 +28,12 @@ async function GetAbl(req, res) {
       return;
     }
 
-    let organization = organizationDao.get(reqParams.GUID);
-    res.json(organization);
+    let lastActivity = organizationDao.lastActivity(reqParams.GUID);
+    res.json(lastActivity);
+    console.log(lastActivity);
   } catch (e) {
     res.status(500).json({ note: e.note });
   }
 }
 
-module.exports = GetAbl;
+module.exports = lastActivityAbl;

@@ -6,7 +6,6 @@ const DeleteAbl = require("../abl/organization/deleteAbl");
 const CreateWithAdminAbl = require("../abl/organization/createWithAdminAbl")
 
 router.get("/get", GetAbl);
-
 router.post("/createWithAdmin", CreateWithAdminAbl);
 router.post("/delete", DeleteAbl);
 

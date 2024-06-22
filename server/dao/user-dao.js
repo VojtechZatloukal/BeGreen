@@ -18,6 +18,29 @@ function get(userGUID) {
     throw { code: "failedToReadUser", message: error.message };
   }
 }
+function getByMail(Email){
+  try {
+    const files = fs.readdirSync(userFolderPath);
+        const userList = files.map((file) => {
+          const fileData = fs.readFileSync(path.join(userFolderPath, file), "utf8");
+          jsonData = JSON.parse(fileData);
+          
+            return jsonData;
+          
+        });
+        var user = null;
+        userList.forEach(element=>{
+          if(element.Email == Email){
+            user = element
+          }
+        })
+        console.log(user);
+        return user;
+  } catch (error) {
+    if (error.code === "ENOENT") return null;
+    throw { code: "failedToReadUser", message: error.message };
+  }
+}
 
 // Method to write an user to a file
 function create(user) {
@@ -81,7 +104,7 @@ function listByOrganization(organizationGUID){
         const userList = files.map((file) => {
           const fileData = fs.readFileSync(path.join(userFolderPath, file), "utf8");
           jsonData = JSON.parse(fileData);
-          if(jsonData.Organizace == organizationGUID){
+          if(jsonData.Organization == organizationGUID){
             return jsonData;
           }
         });
@@ -94,6 +117,7 @@ function listByOrganization(organizationGUID){
 
 module.exports = {
   get,
+  getByMail,
   create,
   update,
   remove,

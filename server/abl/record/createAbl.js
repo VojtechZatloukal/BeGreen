@@ -9,10 +9,10 @@ const userDao = require("../../dao/user-dao.js");
 const schema = {
   type: "object",
   properties: {
-    OrganizationGUID: { type: "string",minLength:36,maxLength:36  },
-    CreatorGUID: { type: "string",minLength:36,maxLength:36 },
+    OrganizationGUID: { type: "string"  },
+    CreatorGUID: { type: "string" },
     Action: { type: "string" },
-    Value: { type: "number" },
+    Value: { type: "string" },
   },
   required: ["OrganizationGUID", "CreatorGUID", "Action", "Value"],
   additionalProperties: false,
@@ -21,7 +21,6 @@ const schema = {
 async function CreateAbl(req, res) {
   try {
     let dtoIn = req.body;
-
 
     const valid = ajv.validate(schema, dtoIn);
     if (!valid) {
@@ -34,17 +33,24 @@ async function CreateAbl(req, res) {
     }
 
 
-    
+
+
     let organizationList = organizationDao.list();
-    const organizationExists = organizationList.some((u) => u.GUID === dtoIn.GUID);
+    var organizationExists = false;
+    for(var element in organizationList){
+      if (element.GUID == dtoIn.GUID){
+        organizationExists = true;
+      }
+    }
+
     if (!organizationExists) {
       res.status(400).json({
         code: "organizationDoesNotExists",
         message: `This organization does not exist`,
       });
-      userDao.remove(user);
       return;
     }
+
     const userList = userDao.list();
     const emailExists = userList.some((u) => u.GUID === dtoIn.CreatorGUID);
     if (!emailExists) {
@@ -54,6 +60,7 @@ async function CreateAbl(req, res) {
       });
       return;
     }
+   
 
     if(dtoIn.Value < 0){
       res.status(400).json({
@@ -63,6 +70,8 @@ async function CreateAbl(req, res) {
       });
       return;
     }
+
+
     dtoIn.Date = Date();
     let record = recordDao.create(dtoIn);
 
